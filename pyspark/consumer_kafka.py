@@ -3,6 +3,8 @@
 from kafka import KafkaProducer
 from kafka import KafkaConsumer
 from kafka.errors import KafkaError
+from kafka import TopicPartition
+from kafka import OffsetAndMetadata
 import json
 
 class Kafka_producer():
@@ -36,14 +38,19 @@ class Kafka_consumer():
 
     def __init__(self,kafkahost, kafkaport, kafkatopic, groupid):
         print "config pie"
+        tp = TopicPartition(kafkatopic, 0)
+        print tp
         self.kafkaHost = kafkahost
         self.kafkaPort = kafkaport
         self.kafkatopic = kafkatopic
         self.groupid = groupid
-        self.consumer = KafkaConsumer(self.kafkatopic, group_id = self.groupid,
+        self.consumer = KafkaConsumer(self.kafkatopic,group_id = self.groupid,
                                       bootstrap_servers = '{kafka_host}:{kafka_port}'.format(
             kafka_host=self.kafkaHost,
             kafka_port=self.kafkaPort))
+
+        # self.consumer.assign([tp])
+        # self.consumer.seek_to_beginning()
 
     def consumer_data(self):
         try:
@@ -55,10 +62,10 @@ class Kafka_consumer():
             print e
 
 def main():
-    producer = Kafka_producer("hadoop-bd3",9092,"dyc")
-    producer.sendJsondata('{"msg":"请求成功","code":1000,"data":[{"data":[{"date":"2017-10-27","value":1}],"name":"陕西"}]}')
-    print "consumer start"
-    consumer = Kafka_consumer('hadoop-bd3', 9092, "dyc", 'consumer_d')
+    # producer = Kafka_producer("hadoop-bd3",9092,"dyc")
+    # producer.sendJsondata('{"msg":"请求成功","code":1000,"data":[{"data":[{"date":"2017-10-27","value":1}],"name":"陕西"}]}')
+    # print "consumer start"
+    consumer = Kafka_consumer('hadoop-bd3', 9092, "dyc", 'consumer_3')
     message = consumer.consumer_data()
     for i in message:
         print "consumer..."
